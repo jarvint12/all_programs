@@ -12,19 +12,19 @@ figure;
 subplot(3,1,1);
 plot(x,ibm);
 title('IBM:n osakekurssi');
-xlabel('p‰iv‰');
+xlabel('p√§iv√§');
 ylabel('kurssi');
 
 subplot(3,1,2);
 plot(x,msft);
 title('Microsoftin osakekurssi');
-xlabel('p‰iv‰');
+xlabel('p√§iv√§');
 ylabel('kurssi');
 
 subplot(3,1,3);
 plot(x,djia);
 title('Down Jones Industrial Average');
-xlabel('p‰iv‰');
+xlabel('p√§iv√§');
 ylabel('kurssi');
 %%
 corr1=corr(ibm,msft);
@@ -50,8 +50,8 @@ title(['MSFT ja DJIA hajontakuvio. Corr=',num2str(corr3)])
 xlabel('MSFT')
 ylabel('DJIA')
 %%
-%laita aika kulkemaan oikeinp‰iin flipud 
-%piirr‰ aikasarjat:vaaka-akselilla aika,pystyll‰ arvot
-%piirr‰ aikasarjat samaan kuvaikkunaan subplot(3,1,1)
-%nime‰ akslit plus otsikot 
+%laita aika kulkemaan oikeinp√§iin flipud 
+%piirr√§ aikasarjat:vaaka-akselilla aika,pystyll√§ arvot
+%piirr√§ aikasarjat samaan kuvaikkunaan subplot(3,1,1)
+%nime√§ akslit plus otsikot 
 %2. 3 eri hajonta kuvaa. scatter kometoa plus corr 
