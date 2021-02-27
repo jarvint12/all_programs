@@ -1,0 +1,101 @@
+---
+title: "Exercise 3"
+author: "Timo Järvinen"
+output: 
+  pdf_document: 
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+    highlight: tango
+---
+  
+```{r setup, include=FALSE}
+# This chunk just sets echo = TRUE as default (i.e. print all code)
+knitr::opts_chunk$set(echo = FALSE,tidy.opts=list(width.cutoff=80), tidy=TRUE)
+```
+# A part
+```{r echo=TRUE, message=FALSE}
+setwd("C:/Users/TimoJ/Documents/Yliopisto/Maisteri/Multivariate Statistical Analysis")
+library(matlib)
+
+help(c)
+help(matrix)
+```
+# B part
+
+```{r}
+A<-matrix(c(2,-2,5,1,7,-8,5,0,-1), nrow=3, ncol=3)
+x<-matrix(c(8,-4,2), ncol=3)
+b<-matrix(c(3,10,-19), ncol=3)
+y<-x%*%inv(A)+b
+```
+
+```{r echo=TRUE, message=FALSE}
+#install.packages("mvtnorm")
+library("mvtnorm")
+set.seed(123)
+```
+# C part
+```{r}
+mu<-matrix(c(3,1), nrow=2)
+sigma<-matrix(c(4,1,1,2), nrow=2)
+samples<-rmvnorm(100, mu, sigma)
+plot(samples)
+
+```
+
+
+# D part
+```{r}
+colMeans(samples)
+S<-cov(samples)
+S
+ev<-eigen(S)
+ev$values
+ev$vectors
+
+trac_real<-S[1,1]+S[2,2]
+trac1<-sum(ev$values)
+trac_real==trac1
+
+deter_real<-S[1,1]*S[2,2]-S[2,1]*S[1,2]
+deter_eig<-ev$values[1]*ev$values[2]
+deter_real==deter_eig
+```
+
+# E part
+```{r}
+b<-c(3,1)
+A<-matrix(c(1,2,3,1), byrow=T, ncol=2)
+ones<-rep(1,100)
+y<-samples%*%t(A)+ones %*% t(b)
+```
+
+```{r}
+center_pairwise_plot<-function(data){
+  data[,1]<-data[,1]-mean(data[,1])
+  data[,2]<-data[,2]-mean(data[,2])
+  data[,3]<-data[,3]-mean(data[,3])
+  data[,4]<-data[,4]-mean(data[,4])
+  pairs(data)
+ # plot(data[,1],data[,2])
+#  plot(data[,1],data[,3])
+#  plot(data[,1],data[,4])
+#  plot(data[,2],data[,3])
+#  plot(data[,2],data[,4])
+#  plot(data[,3],data[,4])
+  return(data)
+}
+
+data <- read.table(
+  "Data1.txt",
+  sep="\t")
+pairs(data)
+data_centered<-center_pairwise_plot(data)
+covar<-cov(data)
+cor(data)
+ev<-eigen(covar)
+ev$values
+ev$vectors
+```
+
