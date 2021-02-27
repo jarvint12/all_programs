@@ -2,7 +2,7 @@
 This repository contains my recent school projects, as well as some work done at the University of Helsinki.
 
 * University of Helsinki contains my bachelor's thesis, file arrangement program and some other work I have done there.
-* My largest program is bachelor's thesis mutation load tool in University of Helsinki folder, README can be found inside bachelor's thesis folder
+* My largest and probably most commented program is bachelor's thesis mutation load tool in University of Helsinki folder, README can be found inside bachelor's thesis folder
 * I think the most interesting program can be found from AI in health tech. It is a neural network, which identifies abnormal X-ray images from normal.
 * Statistical R-programming can be found from Multivariate Statistican Analysis
 * Machine Learning: Advanced Probabilistic Methods contains theory about machine learning.
