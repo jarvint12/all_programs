@@ -8,4 +8,4 @@ This repository contains my recent school projects, as well as some work done at
 * Machine Learning: Advanced Probabilistic Methods contains theory about machine learning.
 * Statistical Natural Language Processing contains course exercise sessions from the course, where I made for example program, which can identify songs to certain artists.
 * C programming, C plus programming and Applied Maths Computer Works are some older courses. 
-* My most advanced Matlab and Mathematica programming can be found from applied maths folder.
+* My most advanced Matlab and Mathematica programming can be found from Applied Maths folder.
