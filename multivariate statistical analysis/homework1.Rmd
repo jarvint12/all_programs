@@ -1,0 +1,77 @@
+---
+title: "Exercise 3"
+author: "Timo Järvinen"
+output: 
+  pdf_document: 
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+    highlight: tango
+---
+  
+```{r setup, include=FALSE}
+# This chunk just sets echo = TRUE as default (i.e. print all code)
+knitr::opts_chunk$set(echo = TRUE,tidy.opts=list(width.cutoff=80), tidy=TRUE)
+```
+
+# Homework
+```{r echo=TRUE, message=FALSE}
+#setwd("C:/Users/TimoJ/Documents/Yliopisto/Maisteri/Multivariate Statistical Analysis")
+library(matlib)
+
+data <- read.table(
+  "Data1.txt",
+  sep="\t")
+```
+
+
+## A. Covariance Matrix from data
+```{r}
+count_covariance<-function(data)  {
+  cov_matrix<-matrix(, nrow = ncol(data), ncol = ncol(data)) #Create empty matrix
+  for (i in 1:ncol(data)){ #Go through every column of data
+    for (j in 1:ncol(data)){ #Go through every column of the data
+      sum<-0 #Create running sum
+      for (k in 1:nrow(data)) { #Go through every row of the data and compares how much both column values differ from column mean, covariance
+        sum<-sum+(data[k,i]-mean(data[,i]))*(data[k,j]-mean(data[,j])) #Count difference to the row and column mean of that specific value, add it to running sum and redo it with every position on that column
+      }
+      cov_matrix[j,i]<-sum/(nrow(data)-1) #covariance matrix is the sum divided by amount of rows minus one
+    }
+  }
+  return(cov_matrix)
+}
+
+cov_matrix<-count_covariance(data)
+cov_matrix
+round(cov_matrix,8)==round(cov(data), 8)
+```
+
+
+
+## B. Inverse square root of matrix from covariance matrix
+```{r}
+count_inv_sq<-function(cov_matrix)  {
+  inverse_matrix<-inv(cov_matrix) #Get inverse of covariance matrix
+  Q<-matrix(eigen(inverse_matrix)$vectors, nrow=4) #Create matrix from eigen vectors of inverse matrix
+  diag_matrix<-diag(sqrt(eigen(inverse_matrix)$values)) #Create diagonal matrix from eigen values of inverse matrix
+  inv_sq<-Q%*%diag_matrix%*%inv(Q) #Count inverse square root matrix
+  return(inv_sq)
+}
+inv_sq<-count_inv_sq(cov_matrix)
+round(inv_sq%*%inv_sq,4) == round(inv(cov_matrix),4) #Check that inverse square root matrix is correct
+
+```
+
+## C. Covariance matrix to correlation matrix
+
+```{r}
+cov2corr_m <- function(cov_matrix){
+  D<-diag(sqrt(diag(cov_matrix))) #Create diagonal matrix from square roots of diagonal values of covariance matrix
+  corr<-inv(D)%*%cov_matrix%*%inv(D) #Count correlation matrix
+  return(corr)
+}
+
+corr<-cov2corr_m(cov_matrix)
+corr
+round(corr,8)==round(cor(data),8) #Check that correlation matrix is correct
+```
