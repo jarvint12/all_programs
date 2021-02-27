@@ -1,0 +1,12 @@
+clear all;
+x=-pi:0.01:pi;
+y=sin(x);
+z=cos(2*x);
+figure;
+plot(x,y);
+hold on;
+plot(x,z,'--');
+grid on;
+axis tight;
+legend('sin(x)','cos(2x)');
+xlabel('x');ylabel('y');
