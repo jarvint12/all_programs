@@ -1,0 +1,4 @@
+C:\Users\Timo J�rvinen\Documents\Yliopisto\C-ohjelmointi\Kierros_7\bits.c: In function 'op_bit_get_sequence':
+C:\Users\Timo J�rvinen\Documents\Yliopisto\C-ohjelmointi\Kierros_7\bits.c:20:14: error: invalid operands to binary << (have 'const unsigned char *' and 'int')
+   data = data<<i;
+              ^~

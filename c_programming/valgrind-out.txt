@@ -1,0 +1,887 @@
+==170== Memcheck, a memory error detector
+==170== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==170== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==170== Command: ./tehtava
+==170== Parent PID: 4
+==170== 
+--170-- 
+--170-- Valgrind options:
+--170--    --leak-check=full
+--170--    --show-leak-kinds=all
+--170--    --track-origins=yes
+--170--    --verbose
+--170--    --log-file=valgrind-out.txt
+--170-- Contents of /proc/version:
+--170--   Linux version 4.4.0-17134-Microsoft (Microsoft@Microsoft.com) (gcc version 5.4.0 (GCC) ) #706-Microsoft Mon Apr 01 18:13:00 PST 2019
+--170-- 
+--170-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
+--170-- Page sizes: currently 4096, max supported 4096
+--170-- Valgrind library directory: /usr/lib/valgrind
+--170-- Reading syms from /mnt/c/Users/Timo Järvinen/Documents/Yliopisto/C-ohjelmointi/tehtava
+--170-- Reading syms from /lib/x86_64-linux-gnu/ld-2.27.so
+--170--   Considering /lib/x86_64-linux-gnu/ld-2.27.so ..
+--170--   .. CRC mismatch (computed 1b7c895e wanted 2943108a)
+--170--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.27.so ..
+--170--   .. CRC is valid
+--170-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--170--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--170--   .. CRC mismatch (computed c25f395c wanted 0a9602a8)
+--170--    object doesn't have a symbol table
+--170--    object doesn't have a dynamic symbol table
+--170-- Scheduler: using generic scheduler lock implementation.
+--170-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==170== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-170-by-neville160-on-???
+==170== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-170-by-neville160-on-???
+==170== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-170-by-neville160-on-???
+==170== 
+==170== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==170== don't want to do, unless you know exactly what you're doing,
+==170== or are doing some strange experiment):
+==170==   /usr/lib/valgrind/../../bin/vgdb --pid=170 ...command...
+==170== 
+==170== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==170==   /path/to/gdb ./tehtava
+==170== and then give GDB the following command
+==170==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=170
+==170== --pid is optional if only one valgrind process is running
+==170== 
+==170== error calling PR_SET_PTRACER, vgdb might block
+--170-- REDIR: 0x401f2f0 (ld-linux-x86-64.so.2:strlen) redirected to 0x58060901 (???)
+--170-- REDIR: 0x401f0d0 (ld-linux-x86-64.so.2:index) redirected to 0x5806091b (???)
+--170-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--170--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--170--   .. CRC mismatch (computed 4b63d83e wanted 670599e6)
+--170--    object doesn't have a symbol table
+--170-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--170--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--170--   .. CRC mismatch (computed a4b37bee wanted 8ad4dc94)
+--170--    object doesn't have a symbol table
+==170== WARNING: new redirection conflicts with existing -- ignoring it
+--170--     old: 0x0401f2f0 (strlen              ) R-> (0000.0) 0x58060901 ???
+--170--     new: 0x0401f2f0 (strlen              ) R-> (2007.0) 0x04c32db0 strlen
+--170-- REDIR: 0x401d360 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c33ee0 (strcmp)
+--170-- REDIR: 0x401f830 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c374f0 (mempcpy)
+--170-- Reading syms from /lib/x86_64-linux-gnu/libc-2.27.so
+--170--   Considering /lib/x86_64-linux-gnu/libc-2.27.so ..
+--170--   .. CRC mismatch (computed b1c74187 wanted 042cc048)
+--170--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.27.so ..
+--170--   .. CRC is valid
+--170-- REDIR: 0x4edac70 (libc.so.6:memmove) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ed9d40 (libc.so.6:strncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edaf50 (libc.so.6:strcasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ed9790 (libc.so.6:strcat) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ed9d70 (libc.so.6:rindex) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edc7c0 (libc.so.6:rawmemchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edade0 (libc.so.6:mempcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edac10 (libc.so.6:bcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ed9d00 (libc.so.6:strncmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ed9800 (libc.so.6:strcmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edad40 (libc.so.6:memset) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ef80f0 (libc.so.6:wcschr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ed9ca0 (libc.so.6:strnlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ed9870 (libc.so.6:strcspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edafa0 (libc.so.6:strncasecmp) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ed9840 (libc.so.6:strcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edb0e0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ed9da0 (libc.so.6:strpbrk) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ed97c0 (libc.so.6:index) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ed9c70 (libc.so.6:strlen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ee46c0 (libc.so.6:memrchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edaff0 (libc.so.6:strcasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edabe0 (libc.so.6:memchr) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4ef8eb0 (libc.so.6:wcslen) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4eda050 (libc.so.6:strspn) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edaf20 (libc.so.6:stpncpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edaef0 (libc.so.6:stpcpy) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edc7f0 (libc.so.6:strchrnul) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4edb040 (libc.so.6:strncasecmp_l) redirected to 0x4a2a6e0 (_vgnU_ifunc_wrapper)
+--170-- REDIR: 0x4fca3c0 (libc.so.6:__strrchr_avx2) redirected to 0x4c32730 (rindex)
+--170-- REDIR: 0x4ed3070 (libc.so.6:malloc) redirected to 0x4c2faa0 (malloc)
+--170-- REDIR: 0x4fc6420 (libc.so.6:__memchr_avx2) redirected to 0x4c33f80 (memchr)
+--170-- REDIR: 0x4fcaad0 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4c366e0 (memmove)
+--170-- REDIR: 0x4fc66f0 (libc.so.6:__rawmemchr_avx2) redirected to 0x4c37050 (rawmemchr)
+--170-- REDIR: 0x4fca590 (libc.so.6:__strlen_avx2) redirected to 0x4c32cf0 (strlen)
+--170-- REDIR: 0x4ed4c30 (libc.so.6:realloc) redirected to 0x4c31cb0 (realloc)
+--170-- REDIR: 0x4fb7950 (libc.so.6:__strcpy_ssse3) redirected to 0x4c32dd0 (strcpy)
+--170-- REDIR: 0x4fa5d60 (libc.so.6:__strcmp_ssse3) redirected to 0x4c33da0 (strcmp)
+--170-- REDIR: 0x4eda590 (libc.so.6:__GI_strstr) redirected to 0x4c37760 (__strstr_sse2)
+--170-- REDIR: 0x4fca1d0 (libc.so.6:__strchrnul_avx2) redirected to 0x4c37020 (strchrnul)
+--170-- REDIR: 0x4fcaab0 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4c37130 (mempcpy)
+--170-- REDIR: 0x4ed3950 (libc.so.6:free) redirected to 0x4c30cd0 (free)
+==170== Invalid read of size 8
+==170==    at 0x108E46: jarjestely (loppuprojekti.c:56)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d440 is 16 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 8
+==170==    at 0x108E6E: jarjestely (loppuprojekti.c:56)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d458 is 40 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 8
+==170==    at 0x108E9D: jarjestely (loppuprojekti.c:57)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d430 is 0 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 8
+==170==    at 0x108EA0: jarjestely (loppuprojekti.c:57)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d438 is 8 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 8
+==170==    at 0x108EAC: jarjestely (loppuprojekti.c:57)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d440 is 16 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 8
+==170==    at 0x108EF3: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d448 is 24 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 8
+==170==    at 0x108EF6: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d450 is 32 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid write of size 8
+==170==    at 0x108EFA: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d430 is 0 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid write of size 8
+==170==    at 0x108EFD: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d438 is 8 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 8
+==170==    at 0x108F01: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d458 is 40 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid write of size 8
+==170==    at 0x108F05: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d440 is 16 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid write of size 8
+==170==    at 0x108F32: jarjestely (loppuprojekti.c:59)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d448 is 24 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid write of size 8
+==170==    at 0x108F35: jarjestely (loppuprojekti.c:59)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d450 is 32 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid write of size 8
+==170==    at 0x108F3D: jarjestely (loppuprojekti.c:59)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d458 is 40 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 8
+==170==    at 0x108FB7: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d440 is 16 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 8
+==170==    at 0x108FE0: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d438 is 8 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 8
+==170==    at 0x109009: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d430 is 0 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 1
+==170==    at 0x4C32CF2: strlen (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x4E994D2: vfprintf (vfprintf.c:1643)
+==170==    by 0x4EA0F25: printf (printf.c:33)
+==170==    by 0x10901F: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d4a0 is 0 bytes inside a block of size 2 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108C3C: add_game (loppuprojekti.c:26)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 1
+==170==    at 0x4C32D04: strlen (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x4E994D2: vfprintf (vfprintf.c:1643)
+==170==    by 0x4EA0F25: printf (printf.c:33)
+==170==    by 0x10901F: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d4a1 is 1 bytes inside a block of size 2 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108C3C: add_game (loppuprojekti.c:26)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 1
+==170==    at 0x4EC7A5D: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1241)
+==170==    by 0x4E98FEA: vfprintf (vfprintf.c:1643)
+==170==    by 0x4EA0F25: printf (printf.c:33)
+==170==    by 0x10901F: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d4a0 is 0 bytes inside a block of size 2 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108C3C: add_game (loppuprojekti.c:26)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 1
+==170==    at 0x4C371F8: mempcpy (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x4EC7993: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1258)
+==170==    by 0x4E98FEA: vfprintf (vfprintf.c:1643)
+==170==    by 0x4EA0F25: printf (printf.c:33)
+==170==    by 0x10901F: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d4a0 is 0 bytes inside a block of size 2 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108C3C: add_game (loppuprojekti.c:26)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid read of size 8
+==170==    at 0x108B8F: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x109673: main (loppuprojekti.c:187)
+==170==  Address 0x522d430 is 0 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid free() / delete / delete[] / realloc()
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x109673: main (loppuprojekti.c:187)
+==170==  Address 0x522d4a0 is 0 bytes inside a block of size 2 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108C3C: add_game (loppuprojekti.c:26)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== Invalid free() / delete / delete[] / realloc()
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x109673: main (loppuprojekti.c:187)
+==170==  Address 0x522d430 is 0 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== HEAP SUMMARY:
+==170==     in use at exit: 132 bytes in 11 blocks
+==170==   total heap usage: 22 allocs, 14 frees, 3,384 bytes allocated
+==170== 
+==170== Searching for pointers to 11 not-freed blocks
+==170== Checked 69,240 bytes
+==170== 
+==170== 4 bytes in 2 blocks are indirectly lost in loss record 1 of 6
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x1092A6: lataa_tiedot (loppuprojekti.c:117)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170== 
+==170== 8 bytes in 2 blocks are indirectly lost in loss record 2 of 6
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x109300: lataa_tiedot (loppuprojekti.c:120)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170== 
+==170== 8 bytes in 2 blocks are indirectly lost in loss record 3 of 6
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x10932C: lataa_tiedot (loppuprojekti.c:121)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170== 
+==170== 8 bytes in 2 blocks are definitely lost in loss record 4 of 6
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108C90: add_game (loppuprojekti.c:29)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 8 bytes in 2 blocks are definitely lost in loss record 5 of 6
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108CB9: add_game (loppuprojekti.c:30)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 116 (96 direct, 20 indirect) bytes in 1 blocks are definitely lost in loss record 6 of 6
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x109221: lataa_tiedot (loppuprojekti.c:107)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170== 
+==170== LEAK SUMMARY:
+==170==    definitely lost: 112 bytes in 5 blocks
+==170==    indirectly lost: 20 bytes in 6 blocks
+==170==      possibly lost: 0 bytes in 0 blocks
+==170==    still reachable: 0 bytes in 0 blocks
+==170==         suppressed: 0 bytes in 0 blocks
+==170== 
+==170== ERROR SUMMARY: 38 errors from 27 contexts (suppressed: 0 from 0)
+==170== 
+==170== 1 errors in context 1 of 27:
+==170== Invalid free() / delete / delete[] / realloc()
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x109673: main (loppuprojekti.c:187)
+==170==  Address 0x522d430 is 0 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 2 of 27:
+==170== Invalid write of size 8
+==170==    at 0x108F3D: jarjestely (loppuprojekti.c:59)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d458 is 40 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 3 of 27:
+==170== Invalid write of size 8
+==170==    at 0x108F35: jarjestely (loppuprojekti.c:59)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d450 is 32 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 4 of 27:
+==170== Invalid write of size 8
+==170==    at 0x108F32: jarjestely (loppuprojekti.c:59)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d448 is 24 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 5 of 27:
+==170== Invalid write of size 8
+==170==    at 0x108F05: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d440 is 16 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 6 of 27:
+==170== Invalid read of size 8
+==170==    at 0x108F01: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d458 is 40 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 7 of 27:
+==170== Invalid write of size 8
+==170==    at 0x108EFD: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d438 is 8 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 8 of 27:
+==170== Invalid write of size 8
+==170==    at 0x108EFA: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d430 is 0 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 9 of 27:
+==170== Invalid read of size 8
+==170==    at 0x108EF6: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d450 is 32 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 10 of 27:
+==170== Invalid read of size 8
+==170==    at 0x108EF3: jarjestely (loppuprojekti.c:58)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d448 is 24 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 11 of 27:
+==170== Invalid read of size 8
+==170==    at 0x108EAC: jarjestely (loppuprojekti.c:57)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d440 is 16 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 12 of 27:
+==170== Invalid read of size 8
+==170==    at 0x108EA0: jarjestely (loppuprojekti.c:57)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d438 is 8 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 1 errors in context 13 of 27:
+==170== Invalid read of size 8
+==170==    at 0x108E9D: jarjestely (loppuprojekti.c:57)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d430 is 0 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 2 errors in context 14 of 27:
+==170== Invalid free() / delete / delete[] / realloc()
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x109673: main (loppuprojekti.c:187)
+==170==  Address 0x522d4a0 is 0 bytes inside a block of size 2 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108C3C: add_game (loppuprojekti.c:26)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 2 errors in context 15 of 27:
+==170== Invalid read of size 8
+==170==    at 0x108B8F: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x109673: main (loppuprojekti.c:187)
+==170==  Address 0x522d430 is 0 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 2 errors in context 16 of 27:
+==170== Invalid read of size 1
+==170==    at 0x4C371F8: mempcpy (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x4EC7993: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1258)
+==170==    by 0x4E98FEA: vfprintf (vfprintf.c:1643)
+==170==    by 0x4EA0F25: printf (printf.c:33)
+==170==    by 0x10901F: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d4a0 is 0 bytes inside a block of size 2 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108C3C: add_game (loppuprojekti.c:26)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 2 errors in context 17 of 27:
+==170== Invalid read of size 1
+==170==    at 0x4EC7A5D: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1241)
+==170==    by 0x4E98FEA: vfprintf (vfprintf.c:1643)
+==170==    by 0x4EA0F25: printf (printf.c:33)
+==170==    by 0x10901F: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d4a0 is 0 bytes inside a block of size 2 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108C3C: add_game (loppuprojekti.c:26)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 2 errors in context 18 of 27:
+==170== Invalid read of size 1
+==170==    at 0x4C32D04: strlen (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x4E994D2: vfprintf (vfprintf.c:1643)
+==170==    by 0x4EA0F25: printf (printf.c:33)
+==170==    by 0x10901F: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d4a1 is 1 bytes inside a block of size 2 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108C3C: add_game (loppuprojekti.c:26)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 2 errors in context 19 of 27:
+==170== Invalid read of size 1
+==170==    at 0x4C32CF2: strlen (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x4E994D2: vfprintf (vfprintf.c:1643)
+==170==    by 0x4EA0F25: printf (printf.c:33)
+==170==    by 0x10901F: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d4a0 is 0 bytes inside a block of size 2 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108B99: muistinnollaus (loppuprojekti.c:14)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108C3C: add_game (loppuprojekti.c:26)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 2 errors in context 20 of 27:
+==170== Invalid read of size 8
+==170==    at 0x109009: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d430 is 0 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 2 errors in context 21 of 27:
+==170== Invalid read of size 8
+==170==    at 0x108FE0: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d438 is 8 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 2 errors in context 22 of 27:
+==170== Invalid read of size 8
+==170==    at 0x108FB7: print_games (loppuprojekti.c:69)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d440 is 16 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 2 errors in context 23 of 27:
+==170== Invalid read of size 8
+==170==    at 0x108E6E: jarjestely (loppuprojekti.c:56)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d458 is 40 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== 
+==170== 2 errors in context 24 of 27:
+==170== Invalid read of size 8
+==170==    at 0x108E46: jarjestely (loppuprojekti.c:56)
+==170==    by 0x108F89: print_games (loppuprojekti.c:67)
+==170==    by 0x10959D: main (loppuprojekti.c:165)
+==170==  Address 0x522d440 is 16 bytes inside a block of size 48 free'd
+==170==    at 0x4C30D3B: free (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BB1: muistinnollaus (loppuprojekti.c:16)
+==170==    by 0x1091AF: lataa_tiedot (loppuprojekti.c:99)
+==170==    by 0x10964C: main (loppuprojekti.c:179)
+==170==  Block was alloc'd at
+==170==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==170==    by 0x108BF4: add_game (loppuprojekti.c:21)
+==170==    by 0x1094EF: main (loppuprojekti.c:147)
+==170== 
+==170== ERROR SUMMARY: 38 errors from 27 contexts (suppressed: 0 from 0)
