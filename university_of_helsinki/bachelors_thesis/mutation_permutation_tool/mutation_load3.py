@@ -22,7 +22,7 @@ r_env = parser.get('tools_and_envs','r_env') #Location for r environment
 #Makes program report
 def make_report(values):
     currentDT=datetime.now()
-    report = "reads_covering_sites_report_"+currentDT.strftime("%Y%m%dT%H%M%S")+".txt" #Report name with timestamp
+    report = "mutationload_report_"+values.prefix+'_'+currentDT.strftime("%Y%m%dT%H%M%S")+".txt" #Report name with timestamp
     report_name=values.destination+'/'+report #Report with path so it can easily be opened later
     with open(report_name, 'w+') as f: #Makes report and writes header
         f.write(os.path.basename(__file__)+" report, "+currentDT.strftime("%Y-%m-%d %H:%M:%S")+".\n") #Writes report introduction
@@ -71,6 +71,7 @@ def write_report_cdf(report,percent,word,current_number, tot_count):
 def annotate_vcf(values, generated_vcf_file, recursion_counter, f_report):
     i=0
     j=0
+    timestamp=datetime.now().strftime("%Y%m%dT%H%M%S")
     headers=[]
     annotated_vcf=[]
     with open(generated_vcf_file, 'r') as f_generated:
@@ -83,28 +84,30 @@ def annotate_vcf(values, generated_vcf_file, recursion_counter, f_report):
                 continue
             lines_to_write=headers+all_lines[i:min(number_of_lines-1, i+36693549)] #66693549, each file consist of the same header and then own variants
             i+=min(number_of_lines-1, i+36693549)
-            with open(values.destination+"/new.vcf", 'w+') as fw:
+            temp_vcf=values.destination+"/new_"+timestamp+".vcf"
+            with open(temp_vcf, 'w+') as fw:
                 for line in lines_to_write:
                     fw.write(line)
-            while not os.path.isfile(values.destination+"/temp_mutation_load"+str(j)+".hg38_multianno.txt"):
+            while not os.path.isfile(values.destination+"/temp_mutation_load"+timestamp+'_'+str(j)+".hg38_multianno.txt"):
                 os.system("rm "+values.destination+"/*.avinput "+values.destination+"/*refGene.* ")
                 time.sleep(1)
                 recursion_counter+=1
                 if recursion_counter>1:
                     print("Uudestaan")
                     f_report.write("uusiks\n")
-                os.system('time '+values.table_annovar+' '+values.destination+'/new.vcf \
-                '+values.annovar+' -buildver '+values.buildver+' -otherinfo -remove --vcfinput -protocol refGene -operation g -out '+values.destination+'/temp_mutation_load'+str(j))
-                print('time '+values.table_annovar+' '+values.destination+'/new.vcf \
-                '+values.annovar+' -buildver '+values.buildver+' -otherinfo -remove --vcfinput -protocol refGene -operation g -out '+values.destination+'/temp_mutation_load'+str(j))
+                os.system('time '+values.table_annovar+' '+temp_vcf+' '+\
+                values.annovar+' -buildver '+values.buildver+' -otherinfo -remove --vcfinput -protocol refGene -operation g -out '+values.destination+'/temp_mutation_load'+timestamp+'_'+str(j))
+                print('time '+values.table_annovar+' '+temp_vcf+' '+\
+                values.annovar+' -buildver '+values.buildver+' -otherinfo -remove --vcfinput -protocol refGene -operation g -out '+values.destination+'/temp_mutation_load'+timestamp+'_'+str(j))
             if recursion_counter>1:
                 print("Rekursio toteutettiin",recursion_counter,"kertaa")
                 f_report.write("Recursion was done "+str(recursion_counter)+" times.\n")
-            annotated_vcf.append(values.destination+"/temp_mutation_load"+str(j)+".hg38_multianno.txt")
-            os.system("rm "+values.destination+"/new.vcf "+values.destination+"/temp_mutation_load"+str(j)+".hg38_multianno.vcf")
+            annotated_vcf.append(values.destination+"/temp_mutation_load"+timestamp+'_'+str(j)+".hg38_multianno.txt")
+            os.system("rm "+temp_vcf+" "+values.destination+"/temp_mutation_load"+timestamp+'_'+str(j)+".hg38_multianno.vcf")
             time.sleep(1)
             j+=1
-    with open(values.destination+"/temp_mutation_load.hg38_multianno.txt", "w+") as fw:
+    all_lines=None
+    with open(values.destination+"/temp_mutation_load_"+timestamp+".hg38_multianno.txt", "w+") as fw:
         i=0
         for file in annotated_vcf:
             with open(file, 'r') as f_r:
@@ -114,7 +117,7 @@ def annotate_vcf(values, generated_vcf_file, recursion_counter, f_report):
             os.system("rm "+file)
             i=1
 
-    return values.destination+"/temp_mutation_load.hg38_multianno.txt"
+    return values.destination+"/temp_mutation_load_"+timestamp+".hg38_multianno.txt"
 
 #Counts different type of variants from given vcf-files
 def count_vcf_mutations(values,vcf_files, amount_of_files):
@@ -130,8 +133,8 @@ def count_vcf_mutations(values,vcf_files, amount_of_files):
             os.system('time '+values.table_annovar+' '+file+' \
             '+values.annovar+' -buildver '+values.buildver+' -otherinfo -remove --vcfinput -protocol refGene -operation g -out '+values.destination+'/temp_mutation_load_ref_vcf')
         f_anno=open(values.destination+'/temp_mutation_load_ref_vcf.hg38_multianno.txt', 'r')
-        next(f_anno) #Skips header
-        for line in f_anno: #Reads stdout line by line
+        f_anno_lines=f_anno.readlines()
+        for line in f_anno_lines[1:]: #Reads stdout line by line, skips header
             components = line.split() #Decodes line values and separate them
             if components[5]!="exonic" and values.skip_nonexon:
                 continue
@@ -279,10 +282,17 @@ def permutate_vcf(values, generated_vcf_files, report):
     else:
         for vcf_file, generated_vcf_file in zip(vcf_files, generated_vcf_files):
             f_report.write("Permutating vcf_file "+vcf_file+" from generated vcf file "+generated_vcf_file+'\n')
-            tot_sum, snv, dels, insertions, synonymous, nonsynonymous, not_exonic = count_vcf_mutations(values,[vcf_file], 1) #Sum of different variant types
-            print("COUNTED")
-            annotated_vcf=annotate_vcf(values, generated_vcf_file,0, f_report)
-            lines_of_annotated_vcf=sample_lines_from_vcf(annotated_vcf, tot_sum[0])
+            with open(vcf_file, 'r') as fr:
+                empty=True
+                for line in fr.readlines():
+                    if not '#' in line:
+                        empty=False
+                        break
+            if not empty:
+                tot_sum, snv, dels, insertions, synonymous, nonsynonymous, not_exonic = count_vcf_mutations(values,[vcf_file], 1) #Sum of different variant types
+                print("COUNTED")
+                annotated_vcf=annotate_vcf(values, generated_vcf_file,0, f_report)
+                lines_of_annotated_vcf=sample_lines_from_vcf(annotated_vcf, tot_sum[0])
             if values.perm_amount>1:
                 if not os.path.isdir(values.destination+"/"+patient_name.main(generated_vcf_file)+"_permutations"):
                     os.mkdir(values.destination+"/"+patient_name.main(generated_vcf_file)+"_permutations")
@@ -292,8 +302,9 @@ def permutate_vcf(values, generated_vcf_files, report):
                 else:
                     new_vcf_file=values.destination+"/"+patient_name.main(generated_vcf_file)+"_permutated_"+str(i)+datetime.now().strftime("_%Y%m%dT%H%M%S")+".vcf" #Name of the new vcf-file
                 make_vcf_file.make_vcf(new_vcf_file, values.reference) #Creates new vcf file name
-                write_permutated_vcf(values, annotated_vcf, new_vcf_file, tot_sum[0], snv[0], dels[0], insertions[0], synonymous[0], nonsynonymous[0], not_exonic[0],lines_of_annotated_vcf) #Creates new vcf and writes random variants based on above variant sums and coverages file
-                sort_permutated_vcf(values, new_vcf_file) #Sort new vcf file
+                if not empty:
+                    write_permutated_vcf(values, annotated_vcf, new_vcf_file, tot_sum[0], snv[0], dels[0], insertions[0], synonymous[0], nonsynonymous[0], not_exonic[0],lines_of_annotated_vcf) #Creates new vcf and writes random variants based on above variant sums and coverages file
+                    sort_permutated_vcf(values, new_vcf_file) #Sort new vcf file
             if not values.keep_anno:
                 os.system("rm "+values.destination+"/temp_mutation_load*")
                 time.sleep(1)
@@ -518,12 +529,19 @@ def stream_command(values):
 
 def plot_cdf_function(cdf_file, values):
     if values.bam_amount==1: #If there is only one file, plots different cumulative plot
-        os.system('source '+r_env+' ; Rscript mutation_load_coverages_onefile.R '+cdf_file+datetime.now().strftime(" "+values.destination+"/cdf_%Y%m%dT%H%M%S.jpg")) #Gives 1 so R program now to plot 1 file plot
+        os.system('source '+r_env+' ; Rscript '+ \
+        '/csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/mutation_permutation_tool/mutation_load_coverages_onefile.R '+ \
+        cdf_file+datetime.now().strftime(" "+values.destination+"/"+values.prefix+"_cdf_%Y%m%dT%H%M%S.jpg")) #Gives 1 so R program now to plot 1 file plot
     else: #There are multiple files
-        print('source '+r_env+' ; Rscript mutation_load_coverages_multiple_files.R '+cdf_file+datetime.now().strftime(" "+values.destination+"/cdf_%Y%m%dT%H%M%S.jpg ")\
-        + datetime.now().strftime(values.destination+"/cdf_zoomed_%Y%m%dT%H%M%S.jpg"))
-        os.system('source '+r_env+' ; Rscript mutation_load_coverages_multiple_files.R '+cdf_file+datetime.now().strftime(" "+values.destination+"/cdf_%Y%m%dT%H%M%S.jpg ")\
-        + datetime.now().strftime(values.destination+"/cdf_zoomed_%Y%m%dT%H%M%S.jpg")) #Gives 2 to program so it nows what to plot
+        print('source '+r_env+' ; Rscript '+ \
+        '/csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/mutation_permutation_tool/mutation_load_coverages_multiple_files.R '+ \
+        cdf_file+datetime.now().strftime(" "+values.destination+"/"+values.prefix+"_cdf_%Y%m%dT%H%M%S.jpg ")\
+        + datetime.now().strftime(values.destination+"/"+values.prefix+"_cdf_zoomed_%Y%m%dT%H%M%S.jpg"))
+
+        os.system('source '+r_env+' ; Rscript '+ \
+        '/csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/mutation_permutation_tool/mutation_load_coverages_multiple_files.R '+ \
+        cdf_file+datetime.now().strftime(" "+values.destination+"/"+values.prefix+"_cdf_%Y%m%dT%H%M%S.jpg ")\
+        + datetime.now().strftime(values.destination+"/"+values.prefix+"_cdf_zoomed_%Y%m%dT%H%M%S.jpg")) #Gives 2 to program so it nows what to plot
 
 
 #Calls for stream_command-function, passes returned stream to stream_line_by_line function, counts genome size with whole_genome_length-function and returns numbers_tot and count
@@ -580,28 +598,30 @@ def continue_permutation(values):
 def make_bed_command(values):
     beds_splitted = values.bed.split() #Separates different bed files
     i=0 #Iterator for different bed files
-    final_bed=values.destination+'/temp_bed_sorted_merged_expanded.bed'
+    timestamp=datetime.now().strftime("%Y%m%dT%H%M%S")
+    final_bed=values.destination+'/temp_bed_sorted_merged_expanded_'+values.bed_prefix+timestamp+'.bed'
     values.bed_regions=dict() #Memorizes all the bed regions, so later non-bed regions wont be counted
     for bed in beds_splitted: #For there is bed file
-        os.system(bedtools_location+' sort -i '+bed+' > temp_bed_sorted.bed') #Sorts bed file
-        os.system(bedtools_location+' merge -i temp_bed_sorted.bed > temp_bed_sorted_merged'+str(i)+'.bed') #Merges bed file
-        os.remove(os.getcwd()+"/temp_bed_sorted.bed") #Removes temp sorted bed file
+        print(bedtools_location+' sort -i '+bed+' > temp_bed_sorted_'+values.bed_prefix+timestamp+'.bed')
+        os.system(bedtools_location+' sort -i '+bed+' > temp_bed_sorted_'+values.bed_prefix+timestamp+'.bed') #Sorts bed file
+        os.system(bedtools_location+' merge -i temp_bed_sorted_'+values.bed_prefix+timestamp+'.bed > temp_bed_sorted_merged'+str(i)+'_'+values.bed_prefix+timestamp+'.bed') #Merges bed file
+        os.remove(os.getcwd()+"/temp_bed_sorted_"+values.bed_prefix+timestamp+".bed") #Removes temp sorted bed file
         i+=1 #Increases index
     if i>1: #If there were more than 1 bed file
         j=1 #another index
-        string=bedtools_location+" intersect -a temp_bed_sorted_merged0.bed -b " #Initialize intersect command with first bed file
+        string=bedtools_location+" intersect -a temp_bed_sorted_merged0_"+values.bed_prefix+timestamp+".bed -b " #Initialize intersect command with first bed file
         while j<i: #While there is a bedfile
-            string+='temp_bed_sorted_merged'+str(j)+'.bed ' #Add bed file to intersect command
+            string+='temp_bed_sorted_merged'+str(j)+'_'+values.bed_prefix+timestamp+'.bed ' #Add bed file to intersect command
             j+=1 #Increase index
-        os.system(string+'> temp_bed_intersect.bed') #Store output to single bed file
-        os.system(bedtools_location+"  merge -i temp_bed_intersect.bed > temp_bed_intersect_merged.bed") #Merge output bed file
-        os.remove(os.getcwd()+"/temp_bed_intersect.bed") #Remove original intersect file
+        os.system(string+'> temp_bed_intersect_'+values.bed_prefix+timestamp+'.bed') #Store output to single bed file
+        os.system(bedtools_location+"  merge -i temp_bed_intersect_"+values.bed_prefix+timestamp+".bed > temp_bed_intersect_merged_"+values.bed_prefix+timestamp+".bed") #Merge output bed file
+        os.remove(os.getcwd()+"/temp_bed_intersect_"+values.bed_prefix+timestamp+".bed") #Remove original intersect file
         j=0 #Initialize index
         while j<i: #Remove all single merged bed files
-            os.remove(os.getcwd()+"/temp_bed_sorted_merged"+str(j)+".bed")
+            os.remove(os.getcwd()+"/temp_bed_sorted_merged"+str(j)+"_"+values.bed_prefix+timestamp+".bed")
             j+=1
-        os.rename(os.getcwd()+'/temp_bed_intersect_merged.bed',os.getcwd()+'/temp_bed_sorted_merged0.bed') #Rename intersect file to default file
-    with open(os.getcwd()+'/temp_bed_sorted_merged0.bed', 'r') as fr:
+        os.rename(os.getcwd()+'/temp_bed_intersect_merged_'+values.bed_prefix+timestamp+'.bed',os.getcwd()+'/temp_bed_sorted_merged0_'+values.bed_prefix+timestamp+'.bed') #Rename intersect file to default file
+    with open(os.getcwd()+'/temp_bed_sorted_merged0_'+values.bed_prefix+timestamp+'.bed', 'r') as fr:
         with open(final_bed, 'w+') as fw:
             for line in fr:
                 columns=line.split()
@@ -618,7 +638,8 @@ def make_bed_command(values):
                 values.bed_regions[columns[0]].append((start,end))
                 i+=1
                 fw.write('\n')
-    os.system("rm "+os.getcwd()+'/temp_bed_sorted_merged0.bed')
+    #os.system("rm "+os.getcwd()+'/temp_bed_sorted_merged0_'+values.bed_prefix+timestamp+'.bed')
+    print("Final bed_file: "+final_bed)
     values.bed=final_bed
     return values #Return values with bed file added
     #return ' -L temp_bed_sorted_merged0.bed ' #Return command
@@ -631,7 +652,7 @@ def start_from_beginning(values):
     bam_files=values.bam #Add all bam files to bam_files variable so values.bam name can be changed on line 585
     generated_vcf_files=list() #Add all generated vcf files for vcf permutation
     if not values.number: #User wants CDF from all reads
-        csv_file=values.destination+datetime.now().strftime("/cdf.%Y%m%dT%H%M%S.csv") #Make csv file for plotting
+        csv_file=values.destination+datetime.now().strftime("/"+values.prefix+"_cdf.%Y%m%dT%H%M%S.csv") #Make csv file for plotting
         csv_opened = open(csv_file, 'w+') #Open csv file for writing
         fnames=['bam_file', 'number_of_reads', 'amount_of_number', 'cumulative_sum', 'percent', 'interval'] #Make column names
         writer = csv.DictWriter(csv_opened, fieldnames=fnames) #Writer for csv writing
@@ -643,7 +664,7 @@ def start_from_beginning(values):
             f.write("\nCounted reads covering sites in bam file "+bam+'.\n')
         values.bam=bam #Save current bam file to values.bam
         if not values.no_vcf_generate:
-            vcf_file=values.destination+'/'+patient_name.main(bam)+datetime.now().strftime("_%Y%m%dT%H%M%S.vcf") #Name for that vcf file of that bam file
+            vcf_file=values.destination+'/'+values.prefix+'_'+patient_name.main(bam)+datetime.now().strftime("_%Y%m%dT%H%M%S_generated.vcf") #Name for that vcf file of that bam file
             make_vcf_file.make_vcf(vcf_file,values.reference) #Makes vcf file
             generated_vcf_files.append(vcf_file) #Add coverages file's new vcf file to all vcf files
         else:
@@ -686,7 +707,7 @@ def check_optparsing(optparser,values):
         optparser.error("Give file (-b /path/to/file) or directory (-d path/to/directory)") #Raises error if not
     if values.destination==None:
         optparser.error("Give destination directory for permutations, report etc.") #Raises error if not
-    if not values.skip_perm and values.vcf_file==None:
+    if (not values.skip_perm and not values.cont_perm) and values.vcf_file==None:
         optparser.error("Give VCF-files corresponding to the BAM-files (--vcf_file \"path/to/file1.vcf path/to/file2.vcf\" or skip permutation by --skip_perm.")
     if not os.path.isdir(values.destination): #Checks that destination directory exists
         optparser.error("Could not find directory "+values.destination+' from directory '+os.getcwd()+'.\n') #Directory was not found
@@ -717,7 +738,10 @@ def check_optparsing(optparser,values):
     else: #Only 1 file was given
         values.bam_amount=1 #Argument so R program knows later how to plot the results
     if not os.path.isdir(values.destination+'/'+"mutation_load_permutations"):
-        os.mkdir(values.destination+'/'+"mutation_load_permutations")
+        try:
+            os.mkdir(values.destination+'/'+"mutation_load_permutations")
+        except FileExistsError:
+            pass
     values.destination=values.destination+'/'+"mutation_load_permutations"
     return values
 
@@ -737,6 +761,7 @@ def optparsing():
     group.add_option("--keep_anno", dest="keep_anno",action="store_true", default=False, help="If you want to keep generated anno files. Default: %default (Some files have same names, doesn't work perfectly)")
     group.add_option("--no_vcf_generate", dest="no_vcf_generate", action="store_true", default=False, help="If you do not want to generate VCF with all possible mutations. Needed in permutation. Default: %default.")
     group.add_option("--get_id_only", dest="get_id_only", action="store_true", default=False, help="If you want to check that program identifies the sample ids")
+    group.add_option("--prefix", dest="prefix", default="", help="Prefix for you files.")
     optparser.add_option_group(group)
 
     group = optparse.OptionGroup(optparser, "Trimming and samtools options",
@@ -787,13 +812,16 @@ def optparsing():
     group.add_option("--report", dest="report", help="Original report from earlier run")
     optparser.add_option_group(group)
 
+    group = optparse.OptionGroup(optparser, "Other options")
+    group.add_option("--bed_prefix", dest="bed_prefix", default="", help="Prefix for temporal bed files (for debugging)")
+    optparser.add_option_group(group)
+
     (values, keys) = optparser.parse_args() #Separate values and keys from parser
     values=check_optparsing(optparser,values)
     return values #Returns optparser values
 
 
 def main():
-    print("JOTAIN OUTOA")
     values = optparsing() #Function makes the optparsing
     if values.get_id_only:
         find_sample_ids(values)

@@ -21,22 +21,24 @@ df <- read.csv(args[1])
 mycolors <- colorRampPalette(brewer.pal(8, "Paired"))(15)
 df <- df %>% group_by(bam_file) %>% mutate(mx = max(cumulative_sum))
 df %>% group_by(bam_file) %>%  ggplot(aes(x = factor( bam_file ), y = percent , fill = factor(interval))) +    # print bar chart
-  geom_bar( stat = 'identity', aes(reorder(bam_file,-mx),percent)) + ylab("Fraction of important genes' genomic positions covered") + xlab("Sample ID") + 
+  geom_bar( stat = 'identity', aes(reorder(bam_file,-mx),percent)) + 
   ggtitle("CDF of reads covering genomic positions") + theme(text = element_text(size=23)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0, 1), labels = scales::percent, breaks=seq(0, 1, by = 0.1)) +
   theme(panel.grid.major.x = element_blank(), panel.grid.major.y = element_line( size=.1, color="black" )) + coord_flip() +
   scale_fill_manual(values = mycolors, breaks=c(1, 5, 7, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500),
                     labels=paste("DP >=", c(1, 5, 7, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500)), name="Fraction of bases with")
+# +ylab("Fraction of genomic positions covered wrt. reference genome") + xlab("Sample ID")
 dev.off()
 
 jpeg(args[3], width = 1024, height = 1200)
 percent_sum = df %>% group_by(bam_file) %>% summarise(y = sum(percent))
 df %>% group_by(bam_file) %>%  ggplot(aes(x = factor( bam_file ), y = percent , fill = factor(interval))) +    # print bar chart
-  geom_bar( stat = 'identity', aes(reorder(bam_file,-mx),percent)) + ylab("Fraction of important genes' genomic positions covered") + xlab("Sample ID") + 
+  geom_bar( stat = 'identity', aes(reorder(bam_file,-mx),percent)) + 
   ggtitle("CDF of reads covering genomic positions") + theme(text = element_text(size=23)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0, roundUp(max(percent_sum$y))), labels = scales::percent, breaks=seq(0, 1, by = 0.1)) +
   theme(panel.grid.major.x = element_blank(), panel.grid.major.y = element_line( size=.1, color="black" )) + coord_flip() +
   scale_fill_manual(values = mycolors, breaks=c(1, 5, 7, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500),
                     labels=paste("DP >=", c(1, 5, 7, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500)), name="Fraction of bases with")
+#+ ylab("Fraction of genomic positions covered wrt. reference genome") + xlab("Sample ID")
 
 dev.off()

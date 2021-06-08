@@ -69,6 +69,7 @@ def count_variants(values, f_report):
         found_mutations=0
         not_found_genes=0
         ignored_mutations=0
+        tot_mutations=0
         for gene in mutated_genes:
             if not gene in found_genes:
                 f_report.write("Not found: "+gene+', containing '+str(mutated_genes[gene])+' mutations.\n')
@@ -77,7 +78,9 @@ def count_variants(values, f_report):
             else:
                 found+=1
                 found_mutations+=mutated_genes[gene]
-        f_report.write("Found:"+str(found)+" genes and "+str(found_mutations)+" mutations.\nNot found:"+str(not_found_genes)+' genes and '+str(ignored_mutations)+' mutations.\n')
+            tot_mutations+=mutated_genes[gene]
+        f_report.write("Found: "+str(found)+" genes and "+str(found_mutations)+" mutations.\nNot found: "+str(not_found_genes)+' genes and '+str(ignored_mutations)+' mutations.\n')
+        f_report.write("Total mutations: "+str(tot_mutations)+'\n')
         f_report.write("Input file for file(s) "+files[:-2]+" can be found in file "+values.destination+'/'+values.prefix+"_MUFFINN_input.txt\n")
 
 
@@ -128,6 +131,17 @@ def go_through_directory(values):
                         break
     return values
 
+def go_through_csv(values):
+    values.files=list()
+    with open(values.csv_file,'r') as fr:
+        for line in fr.readlines()[1:]:
+            values.files.append(values.directory+'/'+line.strip())
+    for file in values.files:
+        assert os.path.isfile(file), "Could not find file "+file+" from directory "+os.getcwd()+"."
+    return values
+
+
+
 def check_optparsing(values, optparser):
     if values.files==None and values.directory==None: #Checks that either file or directory is given
         optparser.error("Give file (-f /path/to/file) or directory (-d /path/to/directory)") #Raises error if not
@@ -152,7 +166,12 @@ def check_optparsing(values, optparser):
     if values.directory!=None:
         if not os.path.isdir(values.directory): #Checks that destination directory exists
             optparser.error("Could not find directory "+values.directory+' from directory '+os.getcwd()+'.\n') #Directory was not found
-        values = go_through_directory(values)
+        if values.csv_file==None:
+            values = go_through_directory(values)
+        else:
+            assert os.path.isfile(values.csv_file), "Could not find file "+values.csv_file+" from directory "+os.getcwd()+"."
+            values=go_through_csv(values)
+
     if not os.path.isdir(values.annovar): #Checks that annovar directory exists
         optparser.error("Could not find directory "+values.annovar+' from directory '+os.getcwd()+'.\n') #Directory was not found
     if not os.path.isfile(values.table_annovar): #Checks that table_annovar.pl exists
@@ -173,7 +192,8 @@ def optparsing():
     group = optparse.OptionGroup(optparser, "Input files options")
     group.add_option("-d", "--directory", dest="directory", help="Directory containing input files if you want to go through whole directory")
     group.add_option("-f", "--file", dest="files", help="If you only have couple of input files (-f /path/to/file)")
-    group.add_option("-x", "--xref", dest="xref_file", help="xref file for genes (-x /path/to/file)")
+    group.add_option("--csv_file", dest="csv_file", help="If you have files in csv file, give csv file and directory.")
+    group.add_option("-x", "--xref", dest="xref_file", help="xref file for genes (-x /path/to/file), founds from MUFFINN/backend")
     group.add_option("--filetype", dest="filetype", default='', help="String you want to be in chosen files, for example \"HRUH\"")
     group.add_option("--skip", dest="skip", default='', help="Files you want to be skipped in directory")
     group.add_option("--cd", dest="cd", default='', help="(-cd CD4|CD8|normal) you want to analyze")

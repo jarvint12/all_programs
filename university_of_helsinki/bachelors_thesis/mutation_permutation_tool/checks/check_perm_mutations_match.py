@@ -19,34 +19,44 @@ def compare_mutations(orig_perm_dir, orig_vcf):
     stderr=subprocess.PIPE)
     out, err = p.communicate()
     orig_mutations=int(out.decode().strip())
+    #print("Checking for "+orig_perm_dir+" and "+orig_vcf)
+    i=0
     for root, dirs, files in os.walk(orig_perm_dir, topdown=True):
         for file in files:
             p = subprocess.Popen('cat '+root+'/'+file+' | grep -v \'#\' | wc -l', shell=True, stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
             out, err = p.communicate()
+            i+=1
             if orig_mutations!=int(out.decode().strip()):
                 print("Mutations differ with "+root+'/'+file+", "+out.decode().strip()+" and "+orig_vcf+", "+str(orig_mutations))
                 break
+    if i!=100:
+        print("Found only "+str(i)+" permutations in directory "+orig_perm_dir)
 
 
 def check_mutations():
     sample_ids=list()
     permutated_files=dict()
-    for root, dirs, files in os.walk("/csc/mustjoki2/variant_move/epi_ski/mutation_load_tool/reports_permutation_HRUH/all_permutations/aa_samples/"):
+    for root, dirs, files in os.walk("/csc/mustjoki2/variant_move/epi_ski/mutation_load_tool/re_permutation/"):
         for file in files: #Checks only VCF files that have permutations in root and saves them to dictionary with their sample id
-            if not "_permutations" in root or not file.endswith(".vcf"):
+            if not "_permutations" in root or not file.endswith(".vcf") or file.endswith("_generated.vcf"):
                 continue
             pattern=re.compile(r'.*_permutated_')
             matches=pattern.finditer(file)
+            sample_id_found=False
             for match in matches:
                 sample_id=match.group(0)[:-12]
                 sample_ids.append(sample_id)
+                sample_id_found=True
                 permutated_files[sample_id]=root
+            if not sample_id_found:
+                print("Could not find sample_id for permutated file "+file)
             break
+    print("Total sample_ids: "+str(len(sample_ids)))
     for sample_id in sample_ids: #Goes through the list of files
         found=False
         found_file=""
-        for root, dirs, files in os.walk("/csc/mustjoki/gatk/aa_genotype/annovar_g3_org/"): #Goes through original directory and finds file that has same sample id in it
+        for root, dirs, files in os.walk("/csc/mustjoki/gatk/aa_genotype/annovar_g3_org_filter_vcf/"): #Goes through original directory and finds file that has same sample id in it
             for file in files:
                 if not file.endswith(".vcf") or "NIH" in file or "JPN" in file or "CLV" in file:
                     continue
@@ -120,7 +130,7 @@ def check_mutations():
 #Collects all HRUH/FH samples from the directory, prints if sample_id was not found or if 2 files have same sample id
 def get_original_vcf():
     original_files=dict()
-    for root, dirs, files in os.walk("/csc/mustjoki/gatk/aa_genotype/annovar_g3_org/"):
+    for root, dirs, files in os.walk("/csc/mustjoki/gatk/aa_genotype/annovar_g3_org_filter_vcf/"):
         for file in files:
             if not file.endswith(".vcf") or "NIH" in file or "JPN" in file or "CLV" in file:
                 continue

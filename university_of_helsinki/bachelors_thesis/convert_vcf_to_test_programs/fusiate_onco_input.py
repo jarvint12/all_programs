@@ -28,9 +28,11 @@ def annotate_input(values, file):
     line_count=0
     vcf_line_count=get_anno_line_count(file, True)
     while not os.path.isfile(values.destination+'/temp_anno_for_onco_'+values.prefix+'.hg38_multianno.txt') or line_count!=vcf_line_count:
-        os.system("rm "+values.destination+'/temp_anno_for_onco_'+values.prefix+'*')
+        os.system("rm "+values.destination+'/temp_anno_for_onco_'+values.prefix+'.*')
         os.system(values.table_annovar+' '+file+' \
-        '+values.annovar+' -buildver '+values.buildver+' -otherinfo -remove --vcfinput -protocol refGene,dbnsfp33a -operation g,f -out '+values.destination+'/temp_anno_for_muffinn_'+values.prefix)
+        '+values.annovar+' -buildver '+values.buildver+' -otherinfo -remove --vcfinput -protocol refGene,dbnsfp33a -operation g,f -out '+values.destination+'/temp_anno_for_onco_'+values.prefix)
+        print(values.table_annovar+' '+file+' \
+        '+values.annovar+' -buildver '+values.buildver+' -otherinfo -remove --vcfinput -protocol refGene,dbnsfp33a -operation g,f -out '+values.destination+'/temp_anno_for_onco_'+values.prefix)
         time.sleep(1)
         if os.path.isfile(values.destination+'/temp_anno_for_onco_'+values.prefix+'.hg38_multianno.txt'):
             line_count=get_anno_line_count(values.destination+'/temp_anno_for_onco_'+values.prefix+'.hg38_multianno.txt', False)
@@ -53,9 +55,11 @@ def create_inputs(values):
             while not (os.path.isfile(values.destination+'/temp_fusiate_'+values.prefix+'.oncordive.txt')):
                 os.system('perl /fs/vault/pipelines/gatk/src/1.0/annovar2oncodrive.pm '+values.destination+'/'+values.prefix+ \
                 ' 1 0 0 0 /fs/vault/pipelines/gatk/data/MutSigCV.1.4/hg38_ens/GCF_000001405.37_GRCh38.p11_assembly_report.txt '+file+' 0')
+                print('perl /fs/vault/pipelines/gatk/src/1.0/annovar2oncodrive.pm '+values.destination+'/'+values.prefix+ \
+                ' 1 0 0 0 /fs/vault/pipelines/gatk/data/MutSigCV.1.4/hg38_ens/GCF_000001405.37_GRCh38.p11_assembly_report.txt '+file+' 0')
             f_report.write("File "+file+" input was stored in file "+values.destination+'/values.prefix\n')
             if values.annotate_input:
-                os.system("rm "+values.destination+'/temp_anno_for_onco_'+values.prefix+'*')
+                os.system("rm "+values.destination+'/temp_anno_for_onco_'+values.prefix+'.*')
             i+=1
     else:
         onco_file=values.destination+'/'+values.prefix+"_oncodrive.txt"
@@ -73,9 +77,18 @@ def create_inputs(values):
             f_report.write(file+'\n')
             os.system("rm "+values.destination+'/temp_fusiate_'+values.prefix+'.*')
             os.system("rm "+values.destination+'/temp_fusiate_'+values.prefix+'_*')
-            if values.annotate_input:
-                os.system("rm "+values.destination+'/temp_anno_for_onco_'+values.prefix+'*')
+            if values.annotate_input and not values.keep_anno:
+                os.system("rm "+values.destination+'/temp_anno_for_onco_'+values.prefix+'.*')
         f_onco.close()
+
+
+def submit_shells(values):
+    i=0
+    for file in values.files:
+        os.system("grun.py -n onc_"+str(i)+" -q all.q -c \"source /homes/tijarvin/anaconda3/bin/activate tpyenv; python3 "+
+        "/csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/convert_vcf_to_test_programs/fusiate_onco_input.py "+
+        "--file "+file+" --destination "+values.destination+" --prefix "+values.prefix+"_"+str(i)+" --annotate_input --keep_anno\"")
+        i+=1
 
 
 def go_through_directory(values):
@@ -154,6 +167,8 @@ def optparsing():
     Creates input file for oncodrive-fm") #Make header for help page
     #Add options to parser
 
+    optparser.add_option("--separate_runs", default=False, action="store_true", help="If you want to create input files for onco, separately.")
+
     group = optparse.OptionGroup(optparser, "Input files options")
     group.add_option("-f", "--file", dest="files", help="File for Oncodrive (-f /path/to/file)")
     group.add_option("-d", "--directory", dest="directory", help="Directory containing files")
@@ -175,6 +190,7 @@ def optparsing():
     group.add_option("--annovar", dest="annovar", default='/fs/vault/pipelines/rnaseq/bin/2.7.0/annovar/humandb_060418/', help="Location of annovar, default=/fs/vault/pipelines/rnaseq/bin/2.7.0/annovar/humandb_060418/'")
     group.add_option("--buildver", dest="buildver", default='hg38', help="Buildver version, default=hg38")
     group.add_option("--table_annovar", dest="table_annovar", default='/fs/vault/pipelines/rnaseq/bin/2.7.0/annovar/table_annovar.pl', help="Location of table_annovar.pl, default=/fs/vault/pipelines/rnaseq/bin/2.7.0/annovar/table_annovar.pl")
+    group.add_option("--keep_anno", default=False, action="store_true", dest="keep_anno", help="If you don't want to remove annotated files")
     optparser.add_option_group(group)
 
     (values, keys) = optparser.parse_args() #Separate values and keys from parser
@@ -183,7 +199,10 @@ def optparsing():
 
 def main():
     values=optparsing()
-    create_inputs(values)
+    if values.separate_runs:
+        submit_shells(values)
+    else:
+        create_inputs(values)
 
 
 

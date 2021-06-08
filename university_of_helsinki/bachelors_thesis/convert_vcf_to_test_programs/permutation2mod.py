@@ -1,10 +1,18 @@
 import os
 import optparse
 import time
+from datetime import datetime
 
+
+#python3 /csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/convert_vcf_to_test_programs/permutation2mod.py --create_inputs --directory /csc/mustjoki2/variant_move/epi_ski/mutation_load_tool/re_permutation/perm_annotations/ --destination /csc/mustjoki2/variant_move/epi_ski/mutation_load_tool/re_permutation/perm_prog_inputs/muffinn_inputs/ --xref /csc/mustjoki2/variant_move/epi_ski/pathway_analysis/muffinn/MUFFINN-1.0.0/MUFFINN/backend/hs_18499.CCDS.xref --vcf2muffinn /csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/convert_vcf_to_test_programs/vcf2muffinn.py --no_dendrix --no_onco
+
+#python3 /csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/convert_vcf_to_test_programs/permutation2mod.py --create_inputs --directory /csc/mustjoki2/variant_move/epi_ski/mutation_load_tool/re_permutation/perm_annotations/ --destination /csc/mustjoki2/variant_move/epi_ski/mutation_load_tool/re_permutation/perm_prog_inputs/dendrix_inputs --dendrix_multiple /csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/convert_vcf_to_test_programs/dendrix_multiple_input.py --no_onco --no_muffinn
+
+#python3 /csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/convert_vcf_to_test_programs/permutation2mod.py --create_inputs --directory /csc/mustjoki2/variant_move/epi_ski/mutation_load_tool/re_permutation/perm_annotations/ --destination /csc/mustjoki2/variant_move/epi_ski/mutation_load_tool/re_permutation/perm_prog_inputs/onco_inputs --f_onco /csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/convert_vcf_to_test_programs/fusiate_onco_input.py --no_dendrix --no_muffinn
 
 def run_programs(values):
-    time_report=open(values.destination+'/time_report.txt', 'a+')
+    currentDT=datetime.now()
+    time_report=open(values.destination+'/time_report_'+values.prefix+'_'+currentDT.strftime("%Y%m%dT%H%M%S")+'.txt', 'a+')
     dest_muffinn_output=values.destination+'/muffinn_output'
     if not os.path.isdir(dest_muffinn_output) and values.muffinn_run:
         try:
@@ -29,45 +37,54 @@ def run_programs(values):
         current_dir=os.getcwd()
         os.chdir(values.muffinn)
         i=values.run_start
+        tot_muffinn_time=0
         while i<=values.number:
             for root, dirs, files in os.walk(values.dest_muffinn, topdown=True): #Goes through every directory, subdirectory and file in the starting_directory
                 for file in sorted(files):
                     if not "MUFFINN_input" in file:
                         continue
                     if "_"+str(i)+"_" in file:
-                        starting_time=time.time()
                         print("perl muffinn.pl "+root+'/'+file+" permutation_output_"+str(i))
+                        starting_time=time.time()
                         os.system("perl muffinn.pl "+root+'/'+file+" permutation_output_"+str(i))
-                        time_report.write("Muffinn: "+str(time.time()-starting_time)+' seconds.\n')
+                        passed_time=time.time()-starting_time
+                        time_report.write("Muffinn: "+str(passed_time)+' seconds.\n')
                         os.system("mv "+values.muffinn+"/output/*permutation_output_"+str(i)+".* "+dest_muffinn_output+"/")
+                        tot_muffinn_time+=passed_time
                         break
             i+=1
+        time_report.write("Total MUFFINN run time: "+str(tot_muffinn_time)+" Average: "+str(tot_muffinn_time/(values.number-values.run_start+1)))
         os.chdir(current_dir)
     #os.system("rm "+values.muffinn+'/output/*HumanNet')
     if values.onco_run:
         i=values.run_start
+        tot_onco_time=0
         while i<=values.number:
             for root, dirs, files in os.walk(values.dest_onco, topdown=True): #Goes through every directory, subdirectory and file in the starting_directory
                 for file in sorted(files):
                     if not file.endswith("_oncodrive.txt"):
                         continue
                     if "_"+str(i)+"_" in file:
-                        starting_time=time.time()
                         print("source /homes/tijarvin/anaconda3/bin/activate permutation_mod; oncodrivefm -e median -o "+dest_onco_output+"/ -m /fs/vault/pipelines/gatk/bin/oncodrivefm_p3.6/data/hugo2go_kegg.txt \
                         -n permutation_"+str(i)+'_median '+root+'/'+file)
+                        starting_time=time.time()
                         os.system("source /homes/tijarvin/anaconda3/bin/activate permutation_mod; oncodrivefm -e median -o "+dest_onco_output+"/ -m /fs/vault/pipelines/gatk/bin/oncodrivefm_p3.6/data/hugo2go_kegg.txt \
                         -n permutation_"+str(i)+'_median '+root+'/'+file)
-                        time_report.write("Oncodrive: "+str(time.time()-starting_time)+' seconds.\n')
+                        passed_time=time.time()-starting_time
+                        time_report.write("Oncodrive: "+str(passed_time)+' seconds.\n')
+                        tot_onco_time+=passed_time
                         #os.system("python3 /csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/convert_vcf_to_test_programs/sort_onco.py -f permutation_"+str(i)+"_median-genes.tsv"+\
                         #" --destination "+dest_onco_output)
                         #os.system("python3 /csc/mustjoki2/variant_move/epi_ski/hus_hematology/Timo/bachelor_thesis/convert_vcf_to_test_programs/sort_onco.py -f permutation_"+str(i)+"_median-pathways.tsv"+\
                         #" --destination "+dest_onco_output)
                         break
             i+=1
+        time_report.write("Total Oncodrive-fm run time: "+str(tot_onco_time)+" Average: "+str(tot_onco_time/(values.number-values.run_start+1)))
 
     if values.dendrix_run:
         print("Running Dendrix")
         i=values.run_start
+        tot_dendrix_time=0
         versions=["gene"]#, "pathway"]
         while i<=values.number:
             print("i: "+str(i))
@@ -87,10 +104,12 @@ def run_programs(values):
                             print("analyzed.txt: "+root+'/'+file)
                             analyzed_file=root+'/'+file
                         if input_file!=None and analyzed_file!=None:
+                            print("python2 "+values.dendrix+' '+input_file+" 3 1 10000000 "+analyzed_file+" 1 1000")
                             starting_time=time.time()
-                            print("python2 "+values.dendrix+' '+input_file+" 3 1 1000000 "+analyzed_file+" 1 1000")
-                            os.system("python2 "+values.dendrix+' '+input_file+" 3 1 1000000 "+analyzed_file+" 1 1000")
-                            time_report.write("Dendrix: "+str(time.time()-starting_time)+' seconds.\n')
+                            os.system("python2 "+values.dendrix+' '+input_file+" 3 1 10000000 "+analyzed_file+" 1 1000")
+                            passed_time=time.time()-starting_time
+                            time_report.write("Dendrix: "+str(passed_time)+' seconds.\n')
+                            tot_dendrix_time+=passed_time
                             os.system("pwd")
                             os.system("ls")
                             print("mv sets_weightOrder_experiment0.txt "+dest_dendrix_output+'/permutation_'+str(i)+'_sets_weightOrder_'+version+'.txt')
@@ -102,6 +121,7 @@ def run_programs(values):
                     if done:
                         break
             i+=1
+        time_report.write("Total Dendrix run time: "+str(tot_dendrix_time)+" Average: "+str(tot_dendrix_time/(values.number-values.run_start+1)))
     time_report.close()
 
 # Adds every annotation file with given index to same input string, combines these with fusiation programs for MUFFINN, oncodrive-fm and Dendrix
@@ -136,16 +156,16 @@ def create_inputs(values):
             starting_time=time.time()
             os.system("python3 "+values.vcf2muffinn+" -f "+string+" -x "+values.xref_file+" --destination "+values.dest_muffinn+ \
             ' --prefix permutated_'+str(i)+' --skip_anno')
-            print("MUFFINN generation: "+str(time.time()-starting_time)+' seconds.\n')
+            print("Total MUFFINN generation: "+str(time.time()-starting_time)+' seconds.\n')
         if not values.no_onco:
             while not os.path.isfile(values.dest_onco+'/permutated_'+str(i)+'_oncodrive.txt'):
                 starting_time=time.time()
                 os.system("python3 "+values.f_onco+" -f "+string+" --prefix permutated_"+str(i)+' --destination '+values.dest_onco) #'/csc/mustjoki2/variant_move/epi_ski/pathway_analysis/test_perm2mod/permutation2mod/onco_input/temp_fusiate.oncordive.txt'
-            print("Onco generation: "+str(time.time()-starting_time)+' seconds.\n')
+            print("Total Onco generation: "+str(time.time()-starting_time)+' seconds.\n')
         if not values.no_dendrix:
             starting_time=time.time()
             os.system("python3 "+values.dendrix_multiple+" -f "+string+" --prefix permutated_"+str(i)+' --destination '+values.dest_dendrix)
-            print("Dendrix generation: "+str(time.time()-starting_time)+' seconds.\n')
+            print("Total Dendrix generation: "+str(time.time()-starting_time)+' seconds.\n')
         print("DONE, "+str(j))
         #os.system("rm "+values.destination+'/permutation2mod/temp_anno/*')
         i+=1
@@ -170,21 +190,21 @@ def check_optparsing(values, optparser):
             optparser.error("Give directory (-d /path/to/directory)") #Raises error if not
         if not os.path.isdir(values.directory): #Checks that destination directory exists
             optparser.error("Could not find directory "+values.directory+' from directory '+os.getcwd()+'.\n') #Directory was not found
-        if values.xref_file==None: #Checks that either file or directory is given
+        if values.xref_file==None and not values.no_muffinn: #Checks that either file or directory is given
             optparser.error("Give xref file (-x /path/to/file.xref)") #Raises error if not
-        if not os.path.isfile(values.xref_file): #If file does not exist
+        if not values.no_muffinn and not os.path.isfile(values.xref_file): #If file does not exist
             raise NameError("Could not find file "+values.xref_file+' from directory '+os.getcwd()+'.\n') #Raises error
-        if values.vcf2muffinn==None: #Checks that either file or directory is given
+        if values.vcf2muffinn==None and not values.no_muffinn: #Checks that either file or directory is given
             optparser.error("Give vcf2muffinn file (-x /path/to/file.py)") #Raises error if not
-        if not os.path.isfile(values.vcf2muffinn): #If file does not exist
+        if not values.no_muffinn and not os.path.isfile(values.vcf2muffinn): #If file does not exist
             raise NameError("Could not find file "+values.vcf2muffinn+' from directory '+os.getcwd()+'.\n') #Raises error
-        if values.f_onco==None: #Checks that either file or directory is given
+        if values.f_onco==None and not values.no_onco: #Checks that either file or directory is given
             optparser.error("Give fusiate_onco_input file (-x /path/to/file.py)") #Raises error if not
-        if not os.path.isfile(values.f_onco): #If file does not exist
+        if not values.no_onco and not os.path.isfile(values.f_onco): #If file does not exist
             raise NameError("Could not find file "+values.f_onco+' from directory '+os.getcwd()+'.\n') #Raises error
-        if values.dendrix_multiple==None: #Checks that either file or directory is given
+        if values.dendrix_multiple==None and not values.no_dendrix: #Checks that either file or directory is given
             optparser.error("Give dendrix_multiple_input file (-x /path/to/file.py)") #Raises error if not
-        if not os.path.isfile(values.dendrix_multiple): #If file does not exist
+        if not values.no_dendrix and not os.path.isfile(values.dendrix_multiple): #If file does not exist
             raise NameError("Could not find file "+values.dendrix_multiple+' from directory '+os.getcwd()+'.\n') #Raises error
         values.prog_input_dirs=values.destination
     elif values.run_programs:
@@ -216,10 +236,11 @@ def optparsing():
     optparser.add_option("--run_programs", dest="run_programs", action="store_true", default=False, help="If you want to the program to run created inputs. Default: %default")
     optparser.add_option("--create_inputs", dest="create_inputs", action="store_true", default=False, help="If you want to the program to create inputs. Default: %default")
     optparser.add_option("--run_start", dest="run_start", type="int", default=0, help="The first index of input file for test programs. Default: %default")
+    optparser.add_option("--prefix", dest="prefix", default="", help="Prefix for time report")
 
     group = optparse.OptionGroup(optparser, "Directory options",
                     "Directories like location of permutated files, destination directory etc.")
-    optparser.add_option("-d", "--directory", dest="directory", help="Directory containing files permutated files")
+    optparser.add_option("-d", "--directory", dest="directory", help="Directory containing annotated permutated files")
     optparser.add_option("--destination", dest="destination", help="destination for output files")
     optparser.add_option("--prog_input_dirs", dest="prog_input_dirs", help="destination for test program input file directories. Give if you don't give --create_inputs")
 

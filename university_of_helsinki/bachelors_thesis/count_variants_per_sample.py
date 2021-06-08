@@ -18,7 +18,7 @@ def find_sample_id(file):
 def get_aa_files():
     with open("/csc/mustjoki2/variant_move/epi_ski/pathway_analysis/AA_hMDS_healthy_list_for_Timo.csv", 'r', encoding='utf-8') as f_r:
         lines=f_r.readlines()[1:]
-    for root, dirs, files in os.walk('/csc/mustjoki/gatk/aa_genotype/annovar_g3_org/'):
+    for root, dirs, files in os.walk('/csc/mustjoki/gatk/aa_genotype/annovar_g3_org_filter_vcf/'):
         aa_files=list()
         for file in files:
             if not file.endswith('.vcf') or "NIH" in file or "CLV" in file or "JPN" in file:
@@ -66,47 +66,47 @@ def count_mutations(aa_files):
             max=(file, mutations)
         if mutations<min[1]:
             min=(file, mutations)
-        while not os.path.isfile("temp_mutation_load.hg38_multianno.txt"):
+        while not os.path.isfile("temp_count_mutations.hg38_multianno.txt"):
             os.system('/fs/vault/pipelines/rnaseq/bin/2.7.0/annovar/table_annovar.pl '+file+' \
-            /fs/vault/pipelines/rnaseq/bin/2.7.0/annovar/humandb_060418/ -buildver hg38 -otherinfo -remove --vcfinput -protocol refGene -operation g -out temp_mutation_load')
+            /fs/vault/pipelines/rnaseq/bin/2.7.0/annovar/humandb_060418/ -buildver hg38 -otherinfo -remove --vcfinput -protocol refGene -operation g -out temp_count_mutations')
 
-        out=subprocess.Popen(["cat temp_mutation_load.hg38_multianno.txt | grep 'exon' | grep 'nonsynonymous' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+        out=subprocess.Popen(["cat temp_count_mutations.hg38_multianno.txt | grep 'exon' | grep 'nonsynonymous' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
         stdout, stderr=out.communicate()
         exon_nonsyno+=int(stdout.split()[0].decode('utf-8'))
 
-        out=subprocess.Popen(["cat temp_mutation_load.hg38_multianno.txt | grep 'splicing' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+        out=subprocess.Popen(["cat temp_count_mutations.hg38_multianno.txt | grep 'splicing' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
         stdout, stderr=out.communicate()
         splicing+=int(stdout.split()[0].decode('utf-8'))
 
-        out=subprocess.Popen(["cat temp_mutation_load.hg38_multianno.txt | grep 'exon' | grep -v 'nonframeshift' | grep 'frameshift' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+        out=subprocess.Popen(["cat temp_count_mutations.hg38_multianno.txt | grep 'exon' | grep -v 'nonframeshift' | grep 'frameshift' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
         stdout, stderr=out.communicate()
         exon_frame+=int(stdout.split()[0].decode('utf-8'))
 
-        out=subprocess.Popen(["cat temp_mutation_load.hg38_multianno.txt | grep 'exon' | grep -v 'nonsynonymous' | grep 'synonymous' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+        out=subprocess.Popen(["cat temp_count_mutations.hg38_multianno.txt | grep 'exon' | grep -v 'nonsynonymous' | grep 'synonymous' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
         stdout, stderr=out.communicate()
         exon_syno+=int(stdout.split()[0].decode('utf-8'))
 
-        out=subprocess.Popen(["cat temp_mutation_load.hg38_multianno.txt | grep 'exon' | grep 'nonframeshift' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+        out=subprocess.Popen(["cat temp_count_mutations.hg38_multianno.txt | grep 'exon' | grep 'nonframeshift' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
         stdout, stderr=out.communicate()
         exon_nonframe+=int(stdout.split()[0].decode('utf-8'))
 
-        out=subprocess.Popen(["cat temp_mutation_load.hg38_multianno.txt | grep 'nonsynonymous' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+        out=subprocess.Popen(["cat temp_count_mutations.hg38_multianno.txt | grep 'nonsynonymous' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
         stdout, stderr=out.communicate()
         nonsynonymous+=int(stdout.split()[0].decode('utf-8'))
 
-        out=subprocess.Popen(["cat temp_mutation_load.hg38_multianno.txt | grep -v 'nonframeshift' | grep 'frameshift' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+        out=subprocess.Popen(["cat temp_count_mutations.hg38_multianno.txt | grep -v 'nonframeshift' | grep 'frameshift' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
         stdout, stderr=out.communicate()
         frame+=int(stdout.split()[0].decode('utf-8'))
 
-        out=subprocess.Popen(["cat temp_mutation_load.hg38_multianno.txt | grep -v 'nonsynonymous' | grep 'synonymous' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+        out=subprocess.Popen(["cat temp_count_mutations.hg38_multianno.txt | grep -v 'nonsynonymous' | grep 'synonymous' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
         stdout, stderr=out.communicate()
         synonymous+=int(stdout.split()[0].decode('utf-8'))
 
-        out=subprocess.Popen(["cat temp_mutation_load.hg38_multianno.txt | grep 'nonframeshift' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+        out=subprocess.Popen(["cat temp_count_mutations.hg38_multianno.txt | grep 'nonframeshift' | wc -l"], stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
         stdout, stderr=out.communicate()
         nonframe+=int(stdout.split()[0].decode('utf-8'))
 
-        os.system("rm temp_mutation_load*")
+        os.system("rm temp_count_mutations*")
 
     print("Mean variants per sample: "+str(total/amount), "Synonymous:", synonymous/amount, "Nonsynonymous:", nonsynonymous/amount, "Max mutations:", max,"Min mutations:", min, \
     "exon nonsyno:", exon_nonsyno/amount, "exon syno:", exon_syno/amount, "splicing:", splicing/amount, "exon frameshift:", exon_frame/amount, "exon nonframeshift:", exon_nonframe/amount, \
